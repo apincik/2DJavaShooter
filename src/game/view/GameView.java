@@ -10,6 +10,7 @@ import game.model.ModelObject;
 import game.control.Controller;
 import game.model.Player;
 import java.awt.Dimension;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -33,6 +34,7 @@ public class GameView extends javax.swing.JFrame {
         this.controller = controller;
         controller.setView(this);
         this.requestFocus();
+        logoutButton.setVisible(false);
         //this.setResizable(false);
     }
     
@@ -41,28 +43,115 @@ public class GameView extends javax.swing.JFrame {
         mainPanel.updateModel(model);
     }
     
+    
+    
     public void finishGameMessage() {
         
         JOptionPane.showMessageDialog(null, "Prehrali ste.");
         
     }
     
+    
+    
     public void startGameMessage() {
         
         JOptionPane.showMessageDialog(null, "Vitajte v hre.");
     }
     
+    
+    
     public void cannotConnectMessage() {
         JOptionPane.showMessageDialog(null, "Neda sa pripojiť k serveru.");
     }
+    
+    
+    
+    public void notLoggedInMessage() {
+        
+        JOptionPane.showMessageDialog(null, "Nieste prihlásený. Prihláste sa alebo registrujte.");
+        
+    }
+    
+    
+    
+    public void  loginFailedMessage() {
+   
+        JOptionPane.showMessageDialog(null, "Nepodarilo sa prihlasiť");
+        
+    }
+    
+    
+    public void loginSuccessfulMessage() {
+     
+        JOptionPane.showMessageDialog(null, "Boli ste prihlaseny.");
+        
+    }
+    
+    
+    
+    public HashMap showLoginDialog() {
+        
+        HashMap<String, String> mp = new HashMap<String, String>();
+        
+        String s = (String)JOptionPane.showInputDialog(
+                    null,
+                    "Zadajte vas login:",
+                    JOptionPane.PLAIN_MESSAGE
+                    );
+        mp.put("user", s);
+        
+        s = (String)JOptionPane.showInputDialog(
+                    null,
+                    "Zadajte vase heslo:",
+                    JOptionPane.PLAIN_MESSAGE
+                    );
+        mp.put("password", s);
+       
+        System.out.println("Login: " + mp.get("user") + " password: " + mp.get("password"));
+        
+        return mp;
+        
+    }
+    
+    
+    public void showMessage(String str) {
+        
+        JOptionPane.showMessageDialog(null, str);
+        
+    }
+    
+    
+    
+    public void handleButtonsAfterLogin() {
+        
+        registerButton.setVisible(false);
+        loginButton.setVisible(false);
+        logoutButton.setVisible(true);
+        
+    }
+    
+    
+    
+    public void setUsernameLabel(String str) {
+        
+        usernameLabel.setText(str);
+        
+    }
+    
+    
+    
     
     public int getDirectionX() {
         return directionX;
     }
 
+    
+    
     public int getDirectionY() {
         return directionY;
     }
+    
+    
     
     public void debugText(String string) {
         String text = textArea.getText();
@@ -70,7 +159,42 @@ public class GameView extends javax.swing.JFrame {
     }
     
     
-    public String playersNameSelectDialog() {
+    
+    public void printTestData() {
+        
+        Dimension dim;
+        String str = "";
+        
+        dim = mainPanel.getSize();
+        str += dim.width + " - " + dim.height;
+        
+        System.out.println(str);
+    }
+    
+    
+    public int getClickedXPosition() {
+        
+        return mainPanel.getClickedXPosition();
+    }
+    
+    
+    public int getClickedYPosition() {
+        
+        
+        return mainPanel.getClickedYPosition();
+        
+    }
+    
+    
+    public boolean isClicked() {
+        
+        return mainPanel.isClicked();
+        
+    }
+    
+    
+    
+    /*public String playersNameSelectDialog() {
 
         String s = (String) JOptionPane.showInputDialog(
                 null,
@@ -87,7 +211,7 @@ public class GameView extends javax.swing.JFrame {
         }
         
         return "";
-    }
+    }*/
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -99,17 +223,18 @@ public class GameView extends javax.swing.JFrame {
     private void initComponents() {
 
         startButton = new javax.swing.JButton();
-        mainPanel = new game.view.MainPanel();
         StopButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
-        gameNameLabel = new javax.swing.JLabel();
-        sendToServerInput = new javax.swing.JTextField();
-        sendToServer = new javax.swing.JButton();
+        mainPanel = new game.view.MainPanel();
+        usernameLabel = new javax.swing.JLabel();
+        loginButton = new javax.swing.JButton();
+        registerButton = new javax.swing.JButton();
+        logoutButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(1000, 500));
-        setPreferredSize(new java.awt.Dimension(800, 700));
+        setMinimumSize(new java.awt.Dimension(666, 450));
+        setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -129,21 +254,6 @@ public class GameView extends javax.swing.JFrame {
             }
         });
 
-        mainPanel.setMaximumSize(new java.awt.Dimension(1900, 1900));
-        mainPanel.setMinimumSize(new java.awt.Dimension(600, 400));
-        mainPanel.setPreferredSize(new java.awt.Dimension(600, 400));
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 637, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 634, Short.MAX_VALUE)
-        );
-
         StopButton.setText("Stop");
         StopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,19 +265,39 @@ public class GameView extends javax.swing.JFrame {
         textArea.setRows(5);
         jScrollPane1.setViewportView(textArea);
 
-        gameNameLabel.setFont(new java.awt.Font("SansSerif", 0, 24)); // NOI18N
-        gameNameLabel.setText("Multiplayer");
+        mainPanel.setMinimumSize(new java.awt.Dimension(500, 400));
 
-        sendToServerInput.addActionListener(new java.awt.event.ActionListener() {
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 500, Short.MAX_VALUE)
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 400, Short.MAX_VALUE)
+        );
+
+        usernameLabel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        loginButton.setText("Login");
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendToServerInputActionPerformed(evt);
+                loginButtonActionPerformed(evt);
             }
         });
 
-        sendToServer.setText("Send");
-        sendToServer.addActionListener(new java.awt.event.ActionListener() {
+        registerButton.setText("Register");
+        registerButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendToServerActionPerformed(evt);
+                registerButtonActionPerformed(evt);
+            }
+        });
+
+        logoutButton.setText("Logout");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutButtonActionPerformed(evt);
             }
         });
 
@@ -175,39 +305,45 @@ public class GameView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(gameNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(startButton)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(StopButton)
-                .addGap(31, 31, 31)
-                .addComponent(sendToServerInput, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sendToServer)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 637, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(startButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(StopButton))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(usernameLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(loginButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(logoutButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(registerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(gameNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(startButton)
-                        .addComponent(StopButton)
-                        .addComponent(sendToServerInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(sendToServer)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 634, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(startButton)
+                            .addComponent(StopButton))
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(usernameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11)
+                        .addComponent(logoutButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(loginButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(registerButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         pack();
@@ -215,13 +351,14 @@ public class GameView extends javax.swing.JFrame {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         controller.start();
-        textArea.setText("Hra sa zacala !");
+        //textArea.setText("Hra sa zacala !");
+        printTestData();
         this.requestFocus();
     }//GEN-LAST:event_startButtonActionPerformed
     
-    public Dimension getPanelSize() {
+    /*public Dimension getPanelSize() {
         return mainPanel.getSize();
-    }
+    }*/
     
     
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -231,20 +368,16 @@ public class GameView extends javax.swing.JFrame {
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 directionX = - Player.PLAYER_MOVE_OFFSET;
-                controller.moving = true;
                 break;
             case KeyEvent.VK_RIGHT:
                 directionX = Player.PLAYER_MOVE_OFFSET;
-                controller.moving = true;
                 break;
             case KeyEvent.VK_UP:
                 //System.out.println("KEY PRESSED\n");
                 directionY = - Player.PLAYER_MOVE_OFFSET;
-                controller.moving = true;
                 break;
             case KeyEvent.VK_DOWN:
                 directionY = Player.PLAYER_MOVE_OFFSET;
-                controller.moving = true;
                 break;
             case 32:                                    //space
                 //System.out.println("SHOOOOOTING");        
@@ -280,25 +413,32 @@ public class GameView extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_formKeyTyped
 
-    
-    
     private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopButtonActionPerformed
         controller.stop();
         this.requestFocus();
     }//GEN-LAST:event_StopButtonActionPerformed
 
-    private void sendToServerInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendToServerInputActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sendToServerInputActionPerformed
-
-    private void sendToServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendToServerActionPerformed
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         
-        String in = this.sendToServerInput.getText();
-        System.out.println("Sending message: " + in);
-        controller.client.sendMessage(in);
+        controller.loginPlayer( showLoginDialog() );
+        
+    }//GEN-LAST:event_loginButtonActionPerformed
 
-    }//GEN-LAST:event_sendToServerActionPerformed
+    private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
+        
+        controller.registerPlayer( showLoginDialog() );
+        
+    }//GEN-LAST:event_registerButtonActionPerformed
 
+    private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
+        registerButton.setVisible(true);
+        loginButton.setVisible(true);
+        logoutButton.setVisible(false);
+        controller.logoutPlayer();
+    }//GEN-LAST:event_logoutButtonActionPerformed
+
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -337,12 +477,13 @@ public class GameView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton StopButton;
-    private javax.swing.JLabel gameNameLabel;
     private javax.swing.JScrollPane jScrollPane1;
-    private game.view.MainPanel mainPanel;
-    private javax.swing.JButton sendToServer;
-    private javax.swing.JTextField sendToServerInput;
+    private javax.swing.JButton loginButton;
+    private javax.swing.JButton logoutButton;
+    public game.view.MainPanel mainPanel;
+    private javax.swing.JButton registerButton;
     private javax.swing.JButton startButton;
-    private javax.swing.JTextArea textArea;
+    public javax.swing.JTextArea textArea;
+    private javax.swing.JLabel usernameLabel;
     // End of variables declaration//GEN-END:variables
 }
